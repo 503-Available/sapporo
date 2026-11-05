@@ -80,7 +80,7 @@
         state.dayIndex = idx >= 0 ? idx : load('dayIndex', 0);
         if (!trip.days[state.dayIndex]) state.dayIndex = 0;
         var hashTab = location.hash.slice(1);
-        var TABS = ['schedule', 'food', 'sight', 'shop', 'reserve'];
+        var TABS = ['schedule', 'food', 'sight', 'shop', 'reserve', 'subway'];
         state.tab = TABS.indexOf(hashTab) >= 0 ? hashTab : load('tab', 'schedule');
         renderHeader();
         render();
@@ -110,7 +110,7 @@
     });
     var html = {
       schedule: renderSchedule, food: renderFood, sight: renderSight,
-      shop: renderShop, reserve: renderReserve
+      shop: renderShop, reserve: renderReserve, subway: renderSubway
     }[state.tab]();
     view.innerHTML = html;
   }
@@ -249,6 +249,81 @@
           (r.how ? '<div class="meta">📞 ' + esc(r.how) + '</div>' : '') +
           '</div>';
       }).join('');
+  }
+
+  // ---------- 10-1. 🚇 지하철 노선도 ----------
+  // 여행에 필요한 역만 표시한 간략 노선도 (직접 그린 SVG)
+  function subwayMap() {
+    var c = {};
+    trip.subway.lines.forEach(function (l) { c[l.id] = l.color; });
+    function st(x, y, color, big) {
+      return '<circle cx="' + x + '" cy="' + y + '" r="' + (big ? 8 : 5) + '" class="st" stroke="' + (color || 'currentColor') + '"/>';
+    }
+    function tx(x, y, s, anchor, cls) {
+      return '<text x="' + x + '" y="' + y + '" text-anchor="' + (anchor || 'start') + '" class="' + (cls || '') + '">' + esc(s) + '</text>';
+    }
+    return '<svg class="subway-map" viewBox="0 0 340 385" role="img" aria-label="삿포로 지하철 간략 노선도">' +
+      // 노선
+      '<path d="M10 200 H330" stroke="' + c.T + '" stroke-width="7" fill="none"/>' +
+      '<path d="M150 20 V365" stroke="' + c.N + '" stroke-width="7" fill="none"/>' +
+      '<path d="M320 25 L290 40 L174 82 V365" stroke="' + c.H + '" stroke-width="7" fill="none" stroke-linejoin="round"/>' +
+      // 역
+      st(150, 50, c.N) + st(150, 270, c.N) + st(150, 330, c.N) +
+      st(290, 40, c.H) + st(174, 280, c.H) + st(290, 200, c.T) +
+      '<rect x="140" y="102" width="44" height="16" rx="8" class="st xfer"/>' +
+      '<rect x="140" y="192" width="44" height="16" rx="8" class="st xfer"/>' +
+      // 역 이름
+      tx(150, 13, '↑ 麻生', 'middle', 'end') +
+      tx(320, 18, '栄町 ↗', 'end', 'end') +
+      tx(138, 54, '北12条', 'end') +
+      tx(132, 114, 'さっぽろ', 'end', 'big') +
+      tx(132, 188, '大通', 'end', 'big') +
+      tx(138, 274, 'すすきの', 'end') +
+      tx(138, 334, '中島公園', 'end') +
+      tx(186, 284, '豊水すすきの') +
+      tx(330, 64, '東区役所前', 'end') +
+      tx(290, 188, 'バスセンター前', 'middle') +
+      tx(12, 188, '← 宮の沢', 'start', 'end') +
+      tx(330, 252, '新さっぽろ →', 'end', 'end') +
+      tx(138, 378, '↓ 真駒内', 'end', 'end') +
+      tx(186, 378, '↓ 福住', 'start', 'end') +
+      // 여행 장소
+      tx(192, 114, '🏨 호텔 · JR삿포로역', 'start', 'poi') +
+      tx(138, 220, '🎄 오도리공원 · TV타워', 'end', 'poi') +
+      tx(290, 220, '🐟 니조시장', 'middle', 'poi') +
+      tx(138, 292, '🍛 스스키노 · 다누키코지', 'end', 'poi') +
+      tx(330, 82, '🍺 맥주박물관', 'end', 'poi') +
+      '</svg>';
+  }
+
+  function renderSubway() {
+    var s = trip.subway;
+    var legend = '<div class="legend">' + s.lines.map(function (l) {
+      return '<span><i style="background:' + esc(l.color) + '"></i>' + esc(l.name) + ' ' + esc(l.nameJa) + '</span>';
+    }).join('') + '</div>';
+
+    var routes = s.routes.map(function (r) {
+      return '<div class="card"><div class="name" style="font-size:17px">' + esc(r.from) + ' → ' + esc(r.to) + '</div>' +
+        '<div class="meta" style="color:var(--text)">🚇 ' + esc(r.how) + '</div>' +
+        (r.alt ? '<div class="meta">💡 ' + esc(r.alt) + '</div>' : '') + '</div>';
+    }).join('');
+
+    var lists = s.lines.map(function (l) {
+      return '<details class="card"><summary><b style="color:' + esc(l.color) + '">●</b> ' + esc(l.name) + ' ' + esc(l.nameJa) +
+        ' <span class="muted">(' + l.stations.length + '개 역)</span></summary><ol class="stations">' +
+        l.stations.map(function (name, i) {
+          return '<li><span class="no" style="background:' + esc(l.color) + '">' + esc(l.id) + pad(i + 1) + '</span>' + esc(name) + '</li>';
+        }).join('') + '</ol></details>';
+    }).join('');
+
+    return '<h2 class="section-title">삿포로 지하철 (여행 구간)</h2>' + legend +
+      '<div class="card map-card">' + subwayMap() + '</div>' +
+      '<p class="muted">💴 ' + esc(s.fare) + '</p>' +
+      '<h2 class="section-title">자주 쓰는 길</h2>' + routes +
+      '<h2 class="section-title">전체 역 목록</h2>' + lists +
+      '<h2 class="section-title">알아두면 좋아요</h2><ul class="tips">' +
+      s.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
+      '<a class="btn" style="margin-top:12px" href="' + esc(s.officialUrl) + '" target="_blank" rel="noopener">🗺 공식 노선도·역 구내도 (삿포로시 교통국)</a>';
   }
 
   // ---------- 11. 장소 상세 창 (FR-02) ----------

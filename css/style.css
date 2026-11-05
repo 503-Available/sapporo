@@ -176,7 +176,7 @@ a { color: var(--accent); }
 /* ---------- 10. 하단 탭바 ---------- */
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
-  display: grid; grid-template-columns: repeat(5, 1fr);
+  display: grid; grid-template-columns: repeat(6, 1fr);
   background: var(--surface); border-top: 1px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -216,6 +216,24 @@ a { color: var(--accent); }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 .btn.full { grid-column: 1 / -1; }
 .btn.close { margin-top: 10px; width: 100%; }
+
+/* ---------- 12. 지하철 노선도 ---------- */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 8px; font-size: 15px; }
+.legend i { display: inline-block; width: 18px; height: 6px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+.map-card { padding: 8px; }
+.subway-map { width: 100%; height: auto; display: block; color: var(--text); }
+.subway-map .st { fill: var(--surface); stroke-width: 3; }
+.subway-map .st.xfer { stroke: var(--text); }
+.subway-map text { fill: var(--text); font-size: 12.5px; font-family: var(--font); }
+.subway-map text.big { font-size: 14px; font-weight: 700; }
+.subway-map text.end { fill: var(--text-sub); font-size: 11.5px; }
+.subway-map text.poi { fill: var(--accent); font-size: 12px; font-weight: 600; }
+details.card summary { cursor: pointer; font-weight: 600; }
+.stations { list-style: none; margin: 10px 0 0; padding: 0; columns: 2; column-gap: 12px; }
+.stations li { margin-bottom: 6px; break-inside: avoid; font-size: 15px; }
+.stations .no { display: inline-block; min-width: 34px; text-align: center; color: #fff; font-size: 12px; font-weight: 700; border-radius: 6px; padding: 0 4px; margin-right: 6px; }
+.tips { margin: 0; padding-left: 20px; }
+.tips li { margin-bottom: 6px; }
 
 @media (prefers-reduced-motion: reduce) {
   .sheet { animation: none; }

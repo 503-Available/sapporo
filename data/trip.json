@@ -15,8 +15,8 @@
         { "time": "12:55", "type": "flight", "title": "인천 출발 (대한항공)", "placeId": "icn", "reservation": "done" },
         { "time": "15:40", "type": "flight", "title": "신치토세 공항 도착", "placeId": "cts", "note": "입국 수속 약 40분" },
         { "time": "16:30", "type": "move", "title": "JR 쾌속 에어포트 → 삿포로역", "note": "약 40분 · IC카드(Kitaca/Suica) 또는 승차권" },
-        { "time": "17:30", "type": "hotel", "title": "호텔 체크인", "placeId": "hotel", "reservation": "done" },
-        { "time": "18:00", "type": "sight", "title": "화이트 일루미네이션 + 크리스마스 마켓", "placeId": "odori", "note": "오늘이 개막일! 마켓은 21:00까지" },
+        { "time": "17:30", "type": "hotel", "title": "호텔 체크인", "placeId": "hotel", "reservation": "done", "note": "조식 시간·장소도 확인하기" },
+        { "time": "18:00", "type": "sight", "title": "화이트 일루미네이션 + 크리스마스 마켓", "placeId": "odori", "note": "오늘이 개막일! 마켓은 21:00까지 · 지하철 さっぽろ→大通 1정거장" },
         { "time": "18:40", "type": "sight", "title": "TV타워 야경", "placeId": "tvtower" },
         { "time": "19:30", "type": "food", "title": "저녁: 수프카레", "placeId": "garaku" },
         { "time": "21:00", "type": "food", "title": "시메 파르페", "placeId": "sato" }
@@ -27,12 +27,12 @@
       "label": "Day 2",
       "theme": "오타루 · 맥주박물관 · 모이와산 야경",
       "items": [
-        { "time": "08:30", "type": "move", "title": "JR 삿포로 → 오타루", "note": "약 40분 · 오타루역 하차" },
-        { "time": "09:15", "type": "food", "title": "아침: 카이센동", "placeId": "takinami" },
-        { "time": "10:15", "type": "sight", "title": "오타루 운하 산책", "placeId": "canal" },
-        { "time": "11:00", "type": "shop", "title": "사카이마치 거리 · 르타오 · 기타이치 글라스", "placeId": "letao", "note": "우유 소프트아이스크림도 여기서!" },
-        { "time": "12:30", "type": "sight", "title": "오르골당 + 나만의 오르골 만들기", "placeId": "youkobo", "reservation": "required" },
-        { "time": "13:45", "type": "food", "title": "점심: 오타루 스시", "placeId": "masazushi" },
+        { "time": "07:30", "type": "food", "title": "아침: 호텔 조식", "placeId": "hotel" },
+        { "time": "08:45", "type": "move", "title": "JR 삿포로 → 오타루", "note": "약 40분 · 오타루역 하차" },
+        { "time": "09:40", "type": "sight", "title": "오타루 운하 산책", "placeId": "canal", "note": "오타루역에서 도보 약 10분" },
+        { "time": "10:30", "type": "shop", "title": "사카이마치 거리 · 기타이치 글라스 · 르타오", "placeId": "letao", "note": "우유 소프트아이스크림도 여기서!" },
+        { "time": "12:30", "type": "shop", "title": "오타루 오르골당 본관 관광 · 쇼핑", "placeId": "orgeldo", "note": "사카이마치 거리 끝 메르헨 교차로" },
+        { "time": "13:45", "type": "food", "title": "점심: 오타루 스시", "placeId": "masazushi", "note": "메르헨 교차로에서 택시 약 5분" },
         { "time": "15:15", "type": "food", "title": "잔기 테이크아웃", "placeId": "naruto", "note": "오타루역 가는 길" },
         { "time": "15:40", "type": "move", "title": "JR 오타루 → 삿포로", "note": "삿포로역에서 택시로 맥주박물관 (약 10분)" },
         { "time": "16:45", "type": "sight", "title": "삿포로 맥주박물관", "placeId": "beermuseum", "note": "마지막 입장 17:30 · 자유관람 무료" },
@@ -43,11 +43,20 @@
     {
       "date": "2026-11-22",
       "label": "Day 3",
-      "theme": "비에이 · 후라노 버스투어",
+      "theme": "비에이 · 후라노 버스투어 (엔데이트립)",
       "items": [
-        { "time": "07:30", "type": "tour", "title": "엔데이트립 투어 집합", "placeId": "tour", "reservation": "done", "note": "⚠️ 집합 시간·장소는 바우처로 확인" },
-        { "time": "08:00", "type": "tour", "title": "비에이 · 후라노 종일 투어", "note": "눈이 올 수 있어요 · 방한화 필수" },
-        { "time": "19:30", "type": "food", "title": "저녁: 게 요리", "placeId": "kanihonke", "reservation": "recommended", "note": "피곤하면 호텔 근처에서 간단히" }
+        { "time": "06:40", "type": "food", "title": "아침: 호텔 조식 (빠르게)", "placeId": "hotel", "note": "조식 시작 시간 확인 · 이르면 편의점 아침으로 대체" },
+        { "time": "07:10", "type": "move", "title": "호텔 출발 → 투어 집합 장소", "note": "늦지 않게 여유 있게 출발" },
+        { "time": "07:30", "type": "tour", "title": "투어 집합", "placeId": "tour", "reservation": "done", "note": "출발 정각 · 집합 장소는 바우처로 확인" },
+        { "time": "07:50", "type": "tour", "title": "버스 이동: 삿포로 → 비에이 (약 3시간)", "note": "고속도로로 약 170km · 중간에 휴게소 1회 정도 · 버스에서 잠깐 눈 붙이기 😴" },
+        { "time": "11:00", "type": "tour", "title": "크리스마스트리 나무", "placeId": "xmastree", "note": "⏱ 이후 시간은 예상치 · 가이드 안내 우선" },
+        { "time": "11:45", "type": "tour", "title": "비에이역 · 점심 (자유식)", "placeId": "bieistation", "note": "점심은 투어에 불포함 · 엔화 현금 준비" },
+        { "time": "13:00", "type": "tour", "title": "탁신관 (사진 갤러리)", "placeId": "takushinkan" },
+        { "time": "14:00", "type": "tour", "title": "청의 호수 (아오이이케)", "placeId": "bluepond" },
+        { "time": "14:45", "type": "tour", "title": "흰수염 폭포", "placeId": "shirahige" },
+        { "time": "15:30", "type": "tour", "title": "사계채의 언덕", "placeId": "shikisai" },
+        { "time": "19:20", "type": "move", "title": "삿포로 도착 (예상)", "note": "투어 총 약 11시간 30분 · 도착 장소는 가이드에게 확인" },
+        { "time": "19:45", "type": "food", "title": "저녁: 네무로 하나마루 회전초밥", "placeId": "hanamaru", "note": "삿포로역 스텔라플레이스 6층 · 예약 불가 → 도착하면 바로 대기 접수" }
       ]
     },
     {
@@ -55,7 +64,8 @@
       "label": "Day 4",
       "theme": "쇼핑 · 귀국 (일본 공휴일)",
       "items": [
-        { "time": "08:00", "type": "food", "title": "아침: 카이센동", "placeId": "oiso" },
+        { "time": "08:00", "type": "food", "title": "아침: 니조시장 해산물 덮밥", "placeId": "oiso" },
+        { "time": "08:45", "type": "food", "title": "니조시장 구경 + 게 맛보기 🦀", "placeId": "nijo", "note": "삶은 털게를 사면 그 자리에서 먹기 좋게 손질해 줘요" },
         { "time": "09:30", "type": "sight", "title": "시계탑", "placeId": "clocktower" },
         { "time": "09:50", "type": "sight", "title": "구 홋카이도 본청사 (붉은 벽돌 청사)", "placeId": "akarenga" },
         { "time": "10:15", "type": "shop", "title": "다누키코지 · 돈키호테 쇼핑", "placeId": "tanukikoji" },
@@ -80,11 +90,8 @@
     {
       "id": "hotel", "category": "hotel", "name": "호텔 에미온 삿포로", "nameJa": "ホテルエミオン札幌",
       "area": "삿포로역 북쪽", "address": "札幌市北区北8条西1丁目4",
-      "map": "ホテルエミオン札幌", "tip": "삿포로역 북쪽 출구에서 도보 약 5분 · 역과 지하통로 연결", "reservation": "done"
-    },
-    {
-      "id": "tour", "category": "sight", "name": "비에이·후라노 버스투어 (엔데이트립)", "nameJa": "美瑛・富良野",
-      "area": "삿포로역 집합", "map": "札幌駅 北口", "tip": "마이리얼트립 예약 · 집합 시간과 장소는 바우처 확인", "reservation": "done"
+      "hours": "체크인 15:00 · 체크아웃 11:00",
+      "map": "ホテルエミオン札幌", "tip": "삿포로역 북쪽 출구에서 도보 약 5분 · 역과 지하통로 연결 · 조식 시간·장소는 체크인 때 확인", "reservation": "done"
     },
 
     {
@@ -115,15 +122,9 @@
     },
 
     {
-      "id": "takinami", "category": "food", "name": "다키나미 식당 (삼각시장)", "nameJa": "北のどんぶり屋 滝波食堂",
-      "area": "오타루역 앞", "address": "小樽市稲穂3丁目10-16 三角市場",
-      "hours": "7:00~17:00", "closed": "무휴 (1/1만 휴무)", "price": "카이센동 ¥2,500~4,000",
-      "map": "滝波食堂 小樽", "tip": "직접 고르는 '와가마마동'(원하는 재료 4가지) 추천 · 오타루역에서 도보 1분"
-    },
-    {
       "id": "canal", "category": "sight", "name": "오타루 운하", "nameJa": "小樽運河",
       "area": "오타루", "price": "무료", "map": "小樽運河 浅草橋",
-      "tip": "아사쿠사바시 다리가 사진 명소 · 해 질 녘 가스등이 켜지면 더 예뻐요"
+      "tip": "아사쿠사바시 다리가 사진 명소"
     },
     {
       "id": "letao", "category": "food", "name": "르타오 본점 · 사카이마치 거리", "nameJa": "小樽洋菓子舗ルタオ 本店",
@@ -132,12 +133,11 @@
       "map": "小樽洋菓子舗ルタオ 本店", "tip": "'더블 프로마주' 치즈케이크 · 근처 기타이치 글라스 3호관(10:00~18:00, 석유램프 카페)도 들러 보세요"
     },
     {
-      "id": "youkobo", "category": "sight", "name": "유코보 (오르골 만들기 체험)", "nameJa": "遊工房",
-      "area": "오타루 오르골당 근처", "address": "小樽市入船1丁目1-5",
-      "hours": "9:00~18:00 (체험 접수 16:30까지)", "tel": "0134-21-3101",
-      "price": "1인 약 ¥2,500~3,000", "map": "遊工房 小樽",
-      "tip": "곡을 골라 나만의 오르골 만들기 (약 1시간) · 오르골당 본관(9:00~18:00, 증기시계 앞)도 함께 구경",
-      "reservation": "required"
+      "id": "orgeldo", "category": "shop", "name": "오타루 오르골당 본관", "nameJa": "小樽オルゴール堂 本館",
+      "area": "오타루 메르헨 교차로", "address": "小樽市住吉町4-1",
+      "hours": "9:00~18:00", "closed": "무휴", "price": "입장 무료",
+      "map": "小樽オルゴール堂 本館",
+      "tip": "1912년 지은 석조 건물 · 오르골 수천 점 · 앞의 증기시계는 15분마다 증기 연주 · 기념품 오르골 쇼핑"
     },
     {
       "id": "masazushi", "category": "food", "name": "오타루 마사즈시 본점", "nameJa": "おたる政寿司 本店",
@@ -174,19 +174,65 @@
     },
 
     {
-      "id": "kanihonke", "category": "food", "name": "삿포로 카니혼케 삿포로역전 본점", "nameJa": "札幌かに本家 札幌駅前本店",
-      "area": "삿포로역 앞", "address": "札幌市中央区北3条西2丁目1-18",
-      "hours": "11:30~22:00 (L.O. 21:30)", "closed": "무휴", "tel": "011-222-0018",
-      "price": "게 코스 1인 ¥8,000~15,000", "map": "札幌かに本家 札幌駅前本店",
-      "tip": "삿포로역 도보 2분 · 핫페퍼(hotpepper.jp)에서 온라인 예약 가능 · 털게·킹크랩 코스", "reservation": "recommended"
+      "id": "tour", "category": "transport", "name": "엔데이트립 비에이·후라노 버스투어", "nameJa": "美瑛・富良野 日帰りバスツアー",
+      "area": "삿포로 출발 (집합 장소는 바우처 확인)",
+      "hours": "07:30 집합 · 총 약 11시간 30분",
+      "map": "札幌駅",
+      "tip": "마이리얼트립 예약 · 'Ndaytrip' 피켓 든 가이드 찾기 · 출발은 정각 · 점심 불포함 · 집합 장소는 바우처로 확인", "reservation": "done"
+    },
+    {
+      "id": "xmastree", "category": "sight", "name": "크리스마스트리 나무", "nameJa": "クリスマスツリーの木",
+      "area": "비에이 (투어)", "map": "クリスマスツリーの木 美瑛",
+      "tip": "설원 위에 홀로 선 가문비나무 · 밭 안으로 들어가면 안 돼요 (사유지)"
+    },
+    {
+      "id": "bieistation", "category": "sight", "name": "비에이역", "nameJa": "JR美瑛駅",
+      "area": "비에이 (투어)", "map": "JR美瑛駅",
+      "tip": "돌로 지은 산장 같은 역사 · 주변 식당에서 자유 점심 · 눈 오면 길이 미끄러워요"
+    },
+    {
+      "id": "takushinkan", "category": "sight", "name": "탁신관 (마에다 신조 사진 갤러리)", "nameJa": "拓真館",
+      "area": "비에이 (투어)", "map": "拓真館 美瑛",
+      "tip": "비에이 언덕 풍경을 세상에 알린 사진작가의 갤러리 · 자작나무 산책길"
+    },
+    {
+      "id": "bluepond", "category": "sight", "name": "청의 호수 (아오이이케)", "nameJa": "白金青い池",
+      "area": "비에이 시로가네 (투어)", "map": "白金青い池",
+      "hours": "겨울 라이트업: 해 질 녘~21:00 (10월 하순~4월)",
+      "tip": "눈이 쌓이면 호수 일부가 얼어 있을 수 있어요 · 길이 미끄러우니 아이젠/방한화"
+    },
+    {
+      "id": "shirahige", "category": "sight", "name": "흰수염 폭포", "nameJa": "白ひげの滝",
+      "area": "비에이 시로가네 (투어)", "map": "白ひげの滝",
+      "tip": "다리 위에서 푸른 강물로 떨어지는 폭포를 내려다봐요 · 다리 위는 바람이 강해요"
+    },
+    {
+      "id": "shikisai", "category": "sight", "name": "사계채의 언덕", "nameJa": "四季彩の丘",
+      "area": "비에이 (투어)", "map": "四季彩の丘",
+      "tip": "11월엔 꽃 대신 설원 풍경 · 알파카 목장이 있어요"
     },
 
     {
-      "id": "oiso", "category": "food", "name": "오이소 (니조시장)", "nameJa": "札幌二条市場 大磯",
+      "id": "nijo", "category": "food", "name": "니조시장 (게 맛보기)", "nameJa": "二条市場",
+      "area": "니조시장", "address": "札幌市中央区南3条東1〜2丁目",
+      "hours": "가게마다 다름 (대부분 아침 7시 무렵~저녁)", "price": "털게 1마리 약 ¥3,000~8,000 (크기·시세에 따라)",
+      "map": "二条市場",
+      "tip": "털게·대게·킹크랩을 삶아서 판매 · 사면 바로 먹을 수 있게 잘라 줘요 · 가격은 1마리 또는 무게 단위라 주문 전에 꼭 확인 · 셋이서 1마리 나눠 맛보기 추천"
+    },
+    {
+      "id": "hanamaru", "category": "food", "name": "네무로 하나마루 (회전초밥)", "nameJa": "回転寿司 根室花まる JRタワーステラプレイス店",
+      "area": "삿포로역 스텔라플레이스 6층", "address": "札幌市中央区北5条西2丁目 JRタワーステラプレイス 6F",
+      "hours": "11:00~22:00 무렵 (가게 사정에 따라 변동)", "price": "1인 ¥2,500~4,000",
+      "map": "根室花まる JRタワーステラプレイス店",
+      "tip": "홋카이도 대표 회전초밥 · 예약 불가, 대기 30~90팀일 때도 있어요 → 투어에서 돌아오면 바로 가서 대기 접수 · 호텔에서 도보 약 10분 · 마감 시간이 이르면 문 닫기 전 입장해야 하니 도착 즉시 이동"
+    },
+
+    {
+      "id": "oiso", "category": "food", "name": "오이소 (니조시장 해산물 덮밥)", "nameJa": "札幌二条市場 大磯",
       "area": "니조시장", "address": "札幌市中央区南3条東2丁目 二条市場",
       "hours": "7:30~15:30 / 17:00~21:00", "closed": "수요일", "tel": "011-219-5252",
       "price": "카이센동 ¥1,800~3,500", "map": "二条市場 大磯",
-      "tip": "성게(우니)가 올라간 '오이소동' 인기 · 공휴일이라 일찍 가기"
+      "tip": "성게(우니)가 올라간 '오이소동' 인기 · 공휴일이라 일찍 가기 · 지하철 バスセンター前 도보 약 5분"
     },
     {
       "id": "clocktower", "category": "sight", "name": "삿포로 시계탑", "nameJa": "札幌市時計台",
@@ -224,13 +270,14 @@
   "foodList": [
     { "id": "f-soupcurry", "name": "수프카레", "emoji": "🍛", "placeIds": ["garaku"] },
     { "id": "f-parfait", "name": "시메 파르페", "emoji": "🍨", "placeIds": ["sato"] },
-    { "id": "f-kaisendon", "name": "카이센동 (해산물 덮밥)", "emoji": "🍣", "placeIds": ["takinami", "oiso"] },
+    { "id": "f-kaisendon", "name": "니조시장 해산물 덮밥 (카이센동)", "emoji": "🍣", "placeIds": ["oiso"] },
     { "id": "f-cheesecake", "name": "르타오 치즈케이크", "emoji": "🧀", "placeIds": ["letao"] },
     { "id": "f-softcream", "name": "홋카이도 우유 소프트아이스크림", "emoji": "🍦", "placeIds": ["letao"] },
     { "id": "f-sushi", "name": "오타루 스시", "emoji": "🍱", "placeIds": ["masazushi"] },
+    { "id": "f-hanamaru", "name": "네무로 하나마루 회전초밥", "emoji": "🍥", "placeIds": ["hanamaru"] },
     { "id": "f-zangi", "name": "잔기 (홋카이도식 닭튀김)", "emoji": "🍗", "placeIds": ["naruto"] },
     { "id": "f-jingisukan", "name": "징기스칸 (양고기 구이)", "emoji": "🍖", "placeIds": ["beergarden"] },
-    { "id": "f-crab", "name": "게 요리 (털게·킹크랩)", "emoji": "🦀", "placeIds": ["kanihonke"] },
+    { "id": "f-crab", "name": "게 요리 (털게·킹크랩)", "emoji": "🦀", "placeIds": ["nijo"] },
     { "id": "f-misoramen", "name": "삿포로 미소라멘", "emoji": "🍜", "placeIds": ["ramendojo"] },
     { "id": "f-rokkatei", "name": "롯카테이 마루세이 버터샌드", "emoji": "🍪", "placeIds": ["ctsshop"] },
     { "id": "f-shiroikoibito", "name": "시로이 코이비토", "emoji": "🤍", "placeIds": ["ctsshop"] }
@@ -243,7 +290,7 @@
     { "id": "s-letao", "category": "기념품 과자", "name": "르타오 더블 프로마주", "where": "르타오 본점 · 공항", "tip": "냉동 상태로 판매 · 보냉백 필요" },
     { "id": "s-jagapokkuru", "category": "기념품 과자", "name": "자가포쿠루 (감자 스낵)", "where": "공항", "tip": "인기 품절 상품 · 보이면 바로 구매" },
     { "id": "s-yoshitei", "category": "기념품 과자", "name": "기타카로 바움쿠헨 '요이토마케'", "where": "공항 · 오타루" },
-    { "id": "s-orgel", "category": "기념품", "name": "오타루 오르골", "where": "오타루 오르골당" },
+    { "id": "s-orgel", "category": "기념품", "name": "오타루 오르골", "where": "오타루 오르골당 본관" },
     { "id": "s-glass", "category": "기념품", "name": "오타루 유리 공예품", "where": "기타이치 글라스" },
     { "id": "s-kyusoku", "category": "드럭스토어", "name": "휴족시간 (발 냉각 시트)", "where": "다누키코지 드럭스토어" },
     { "id": "s-megrhythm", "category": "드럭스토어", "name": "메구리즘 온열 안대", "where": "다누키코지 드럭스토어" },
@@ -253,9 +300,38 @@
   "reservations": [
     { "id": "r-flight", "title": "대한항공 왕복", "when": "11/20 12:55 출발 · 11/23 16:50 귀국", "status": "done", "placeId": "cts" },
     { "id": "r-hotel", "title": "호텔 에미온 삿포로 (3박)", "when": "11/20 ~ 11/23", "status": "done", "placeId": "hotel" },
-    { "id": "r-tour", "title": "비에이·후라노 버스투어 (마이리얼트립)", "when": "11/22 종일", "status": "done", "placeId": "tour", "how": "집합 시간·장소는 바우처 확인" },
-    { "id": "r-orgel", "title": "오르골 만들기 체험 (3인)", "when": "11/21 12:30", "status": "required", "placeId": "youkobo", "how": "전화 0134-21-3101 · 또는 VELTRA에서 '오르골당 해명루' 체험 온라인 예약" },
-    { "id": "r-beergarden", "title": "삿포로 맥주원 징기스칸 (3인)", "when": "11/21 18:00", "status": "recommended", "placeId": "beergarden", "how": "전화 0570-098-346 · 공식 사이트" },
-    { "id": "r-kani", "title": "카니혼케 게 요리 (3인)", "when": "11/22 19:30", "status": "recommended", "placeId": "kanihonke", "how": "핫페퍼·구루나비 온라인 예약 · 전화 011-222-0018" }
-  ]
+    { "id": "r-tour", "title": "비에이·후라노 버스투어 (마이리얼트립)", "when": "11/22 07:30 집합", "status": "done", "placeId": "tour", "how": "집합 장소는 바우처로 확인" },
+    { "id": "r-beergarden", "title": "삿포로 맥주원 징기스칸 (3인)", "when": "11/21 18:00", "status": "recommended", "placeId": "beergarden", "how": "전화 0570-098-346 · 공식 사이트" }  ],
+
+  "subway": {
+    "fare": "지하철 기본요금 어른 ¥210 (1구간) · 노면전차(시덴) 약 ¥200",
+    "officialUrl": "https://www.city.sapporo.jp/st/",
+    "lines": [
+      {
+        "id": "N", "name": "남북선", "nameJa": "南北線", "color": "#00a15c",
+        "stations": ["麻生", "北34条", "北24条", "北18条", "北12条", "さっぽろ", "大通", "すすきの", "中島公園", "幌平橋", "中の島", "平岸", "南平岸", "澄川", "自衛隊前", "真駒内"]
+      },
+      {
+        "id": "T", "name": "동서선", "nameJa": "東西線", "color": "#f39800",
+        "stations": ["宮の沢", "発寒南", "琴似", "二十四軒", "西28丁目", "円山公園", "西18丁目", "西11丁目", "大通", "バスセンター前", "菊水", "東札幌", "白石", "南郷7丁目", "南郷13丁目", "南郷18丁目", "大谷地", "ひばりが丘", "新さっぽろ"]
+      },
+      {
+        "id": "H", "name": "도호선", "nameJa": "東豊線", "color": "#0079c2",
+        "stations": ["栄町", "新道東", "元町", "環状通東", "東区役所前", "北13条東", "さっぽろ", "大通", "豊水すすきの", "学園前", "豊平公園", "美園", "月寒中央", "福住"]
+      }
+    ],
+    "routes": [
+      { "from": "🏨 호텔", "to": "🎄 오도리공원", "how": "남북선 さっぽろ → 大通 (1정거장)", "alt": "지하보도 '치카호'로 도보 약 15분 · 눈·추위 걱정 없음" },
+      { "from": "🎄 오도리", "to": "🍛 스스키노", "how": "남북선 大通 → すすきの (1정거장)", "alt": "도보 약 10분" },
+      { "from": "🏨 호텔", "to": "🐟 니조시장", "how": "도호선 さっぽろ → 大通 → 동서선 バスセンター前, 도보 5분", "alt": "택시 약 10분" },
+      { "from": "🍺 맥주원", "to": "🚡 모이와산", "how": "택시 추천 (약 25분)", "alt": "노면전차 ロープウェイ入口 하차 → 무료 셔틀버스" },
+      { "from": "🏨 삿포로역", "to": "✈️ 신치토세 공항", "how": "JR 쾌속 에어포트 (약 40분)", "alt": "지하철 아님 · JR 개찰구 이용" }
+    ],
+    "tips": [
+      "갤럭시: 한국판은 모바일 Suica가 안 돼요 → 역 발매기에서 승차권 구입 또는 Kitaca/Suica 카드 구입",
+      "아이폰: 지갑 앱에 Suica 추가 후 충전하면 지하철·JR·편의점 모두 사용 가능",
+      "같은 이름의 'さっぽろ'·'大通' 역도 노선마다 승강장이 달라요 → 노선 색깔을 따라가세요",
+      "역 번호 표기: N=남북선, T=동서선, H=도호선 (예: N06 さっぽろ)"
+    ]
+  }
 }
