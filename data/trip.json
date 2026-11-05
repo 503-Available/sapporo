@@ -45,7 +45,6 @@
       "label": "Day 3",
       "theme": "비에이 · 후라노 버스투어 (엔데이트립)",
       "items": [
-        { "time": "06:40", "type": "food", "title": "아침: 호텔 조식 (빠르게)", "placeId": "hotel", "note": "조식 시작 시간 확인 · 이르면 편의점 아침으로 대체" },
         { "time": "07:10", "type": "move", "title": "호텔 출발 → 투어 집합 장소", "note": "늦지 않게 여유 있게 출발" },
         { "time": "07:30", "type": "tour", "title": "투어 집합", "placeId": "tour", "reservation": "done", "note": "출발 정각 · 집합 장소는 바우처로 확인" },
         { "time": "07:50", "type": "tour", "title": "버스 이동: 삿포로 → 비에이 (약 3시간)", "note": "고속도로로 약 170km · 중간에 휴게소 1회 정도 · 버스에서 잠깐 눈 붙이기 😴" },
