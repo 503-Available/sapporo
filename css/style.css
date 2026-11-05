@@ -1,0 +1,223 @@
+/* =========================================================
+   삿포로 가족여행 2026 — 디자인 (J2)
+   겨울 홋카이도 테마 · 큰 글씨 · 자동 다크 모드
+   ========================================================= */
+
+/* ---------- 1. 색상·크기 토큰 ---------- */
+:root {
+  --bg: #f3f6fa;
+  --surface: #ffffff;
+  --surface-2: #e9eff6;
+  --text: #16243a;
+  --text-sub: #5a6b82;
+  --line: #d8e1ec;
+  --brand: #1e3a5f;          /* 남색 */
+  --brand-text: #ffffff;
+  --accent: #2f6fb5;         /* 링크·버튼 */
+  --red: #d2342f;            /* 예약 필수 */
+  --yellow: #c98a00;         /* 예약 권장 */
+  --green: #2e8b57;          /* 완료 */
+  --now-bg: #fff4e5;
+  --now-line: #f0a020;
+
+  --radius: 14px;
+  --font: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic",
+          "Noto Sans KR", "Segoe UI", sans-serif;
+  --tabbar-h: 64px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1b2d;
+    --surface: #172840;
+    --surface-2: #1f3452;
+    --text: #eef3fa;
+    --text-sub: #a5b4c8;
+    --line: #2a4163;
+    --brand: #0b1524;
+    --accent: #7fb2ec;
+    --red: #ff6b66;
+    --yellow: #f2b632;
+    --green: #5cc98a;
+    --now-bg: #3a2f17;
+    --now-line: #f0a020;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1b2d; --surface: #172840; --surface-2: #1f3452; --text: #eef3fa;
+  --text-sub: #a5b4c8; --line: #2a4163; --brand: #0b1524; --accent: #7fb2ec;
+  --red: #ff6b66; --yellow: #f2b632; --green: #5cc98a; --now-bg: #3a2f17;
+  color-scheme: dark;
+}
+
+/* ---------- 2. 기본 ---------- */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 17px;           /* NFR-04: 큰 글씨 */
+  line-height: 1.5;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+}
+button { font: inherit; color: inherit; }
+a { color: var(--accent); }
+
+/* ---------- 3. 상단 헤더 ---------- */
+.app-header {
+  background: var(--brand);
+  color: var(--brand-text);
+  padding: calc(14px + env(safe-area-inset-top)) 16px 14px;
+}
+.app-header h1 { margin: 0; font-size: 21px; font-weight: 700; }
+.subtitle { margin: 2px 0 0; font-size: 15px; opacity: .85; }
+
+.view { padding: 12px 16px 24px; max-width: 640px; margin: 0 auto; }
+.loading { text-align: center; color: var(--text-sub); padding: 40px 0; }
+.section-title { font-size: 19px; margin: 20px 0 10px; }
+.section-title:first-child { margin-top: 4px; }
+.muted { color: var(--text-sub); font-size: 15px; }
+
+/* ---------- 4. 일자 탭 ---------- */
+.day-tabs {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+  position: sticky; top: 0; z-index: 5;
+  background: var(--bg); padding: 8px 0;
+}
+.day-tabs button {
+  border: 1px solid var(--line); background: var(--surface);
+  border-radius: 10px; padding: 6px 2px; cursor: pointer; line-height: 1.25;
+}
+.day-tabs button b { display: block; font-size: 16px; }
+.day-tabs button small { font-size: 13px; color: var(--text-sub); }
+.day-tabs button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.day-tabs button.active small { color: #fff; opacity: .9; }
+.day-theme { font-weight: 700; margin: 6px 0 10px; }
+
+/* ---------- 5. 지금/다음 카드 ---------- */
+.now-card {
+  background: var(--now-bg); border: 2px solid var(--now-line);
+  border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px;
+}
+.now-card .label { font-size: 14px; font-weight: 700; color: var(--now-line); }
+.now-card .title { font-size: 19px; font-weight: 700; margin: 2px 0 6px; }
+.now-card .next { font-size: 15px; color: var(--text-sub); border-top: 1px dashed var(--line); padding-top: 6px; }
+.countdown { text-align: center; padding: 16px; }
+.countdown b { font-size: 30px; display: block; color: var(--accent); }
+
+/* ---------- 6. 타임라인 ---------- */
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li {
+  display: grid; grid-template-columns: 54px 28px 1fr auto; align-items: start; gap: 4px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 10px; margin-bottom: 8px;
+}
+.timeline li.clickable { cursor: pointer; }
+.timeline li.is-now { border: 2px solid var(--now-line); }
+.timeline li.is-past { opacity: .55; }
+.timeline .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+.timeline .ico { text-align: center; }
+.timeline .body { min-width: 0; overflow-wrap: anywhere; }
+.timeline .body .t { font-weight: 600; }
+.timeline .body .n { font-size: 14px; color: var(--text-sub); }
+.timeline .chev { color: var(--text-sub); font-size: 20px; line-height: 1.2; }
+
+/* ---------- 7. 예약 배지 ---------- */
+.badge {
+  display: inline-block; font-size: 13px; font-weight: 700; border-radius: 999px;
+  padding: 1px 8px; margin-left: 4px; vertical-align: 2px; white-space: nowrap;
+}
+.badge.required { background: var(--red); color: #fff; }
+.badge.recommended { background: var(--yellow); color: #fff; }
+.badge.done { background: var(--green); color: #fff; }
+
+/* ---------- 8. 카드 목록 (맛집·관광·예약) ---------- */
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 12px 14px; margin-bottom: 10px;
+}
+.card.clickable { cursor: pointer; }
+.card .name { font-weight: 700; font-size: 18px; }
+.card .ja { font-size: 14px; color: var(--text-sub); }
+.card .meta { font-size: 15px; color: var(--text-sub); margin-top: 4px; }
+.card.resv-required { border-left: 6px solid var(--red); }
+.card.resv-recommended { border-left: 6px solid var(--yellow); }
+.card.resv-done { border-left: 6px solid var(--green); }
+
+/* ---------- 9. 체크리스트 (먹킷·쇼핑) ---------- */
+.progress-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px; }
+.progress-wrap .count { font-weight: 700; font-size: 18px; }
+.progress { height: 10px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-top: 8px; }
+.progress > div { height: 100%; background: var(--green); border-radius: 99px; transition: width .3s; }
+
+.checklist { list-style: none; margin: 0 0 8px; padding: 0; }
+.checklist li {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 12px; margin-bottom: 8px;
+}
+.checklist input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--green); flex: none; }
+.checklist label { flex: 1; cursor: pointer; }
+.checklist li.checked label .t { text-decoration: line-through; color: var(--text-sub); }
+.checklist .sub { display: block; font-size: 14px; color: var(--text-sub); }
+.checklist .body { flex: 1; min-width: 0; }
+.checklist .body label { display: block; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.chip {
+  border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px;
+  font-size: 14px; padding: 4px 10px; cursor: pointer; color: var(--accent);
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ---------- 10. 하단 탭바 ---------- */
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tabbar button {
+  height: var(--tabbar-h); border: 0; background: none; cursor: pointer;
+  font-size: 13px; color: var(--text-sub); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+}
+.tabbar button span { font-size: 22px; line-height: 1; }
+.tabbar button.active { color: var(--accent); font-weight: 700; }
+
+/* ---------- 11. 장소 상세 (바텀시트) ---------- */
+.sheet-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 30; }
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 31;
+  max-height: 85vh; overflow-y: auto;
+  background: var(--surface); color: var(--text);
+  border-radius: 20px 20px 0 0;
+  padding: 8px 18px calc(20px + env(safe-area-inset-bottom));
+  max-width: 640px; margin: 0 auto;
+  animation: up .2s ease-out;
+}
+@keyframes up { from { transform: translateY(100%); } to { transform: none; } }
+.sheet .grabber { width: 44px; height: 5px; border-radius: 9px; background: var(--line); margin: 4px auto 12px; }
+.sheet h2 { margin: 0; font-size: 21px; }
+.sheet .ja { color: var(--text-sub); margin: 2px 0 10px; }
+.sheet dl { margin: 0; display: grid; grid-template-columns: 28px 1fr; gap: 6px 4px; }
+.sheet dt { text-align: center; }
+.sheet dd { margin: 0; }
+.sheet .tip { background: var(--surface-2); border-radius: 12px; padding: 10px 12px; margin-top: 12px; }
+.sheet .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 50px; border-radius: 12px; font-weight: 700; text-decoration: none;
+  border: 1px solid var(--line); background: var(--surface-2); color: var(--text); cursor: pointer;
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.full { grid-column: 1 / -1; }
+.btn.close { margin-top: 10px; width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet { animation: none; }
+  .progress > div { transition: none; }
+}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>삿포로 가족여행 2026</title>
+  <meta name="description" content="수능 끝! 우리 가족 홋카이도 맛집 여행">
+  <!-- 검색엔진 노출 차단 (G6) -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- PWA: 앱 이름·아이콘 (G3) -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e3a5f" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1b2d" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <!-- 아이폰 홈 화면 설치용 -->
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="삿포로 2026">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1 id="app-title">❄ 삿포로 가족여행 2026</h1>
+    <p id="app-subtitle" class="subtitle"></p>
+  </header>
+
+  <!-- 화면 내용은 js/app.js 가 trip.json 을 읽어서 채웁니다 -->
+  <main id="view" class="view" aria-live="polite">
+    <p class="loading">불러오는 중…</p>
+  </main>
+
+  <!-- 하단 탭 5개 (J1) -->
+  <nav class="tabbar" aria-label="메뉴">
+    <button data-tab="schedule" class="active"><span>📅</span>일정</button>
+    <button data-tab="food"><span>🍜</span>맛집</button>
+    <button data-tab="sight"><span>🗼</span>관광</button>
+    <button data-tab="shop"><span>🛍️</span>쇼핑</button>
+    <button data-tab="reserve"><span>📋</span>예약</button>
+  </nav>
+
+  <!-- 장소 상세: 아래에서 올라오는 창 (FR-02) -->
+  <div id="sheet-backdrop" class="sheet-backdrop" hidden></div>
+  <section id="sheet" class="sheet" role="dialog" aria-modal="true" hidden></section>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
