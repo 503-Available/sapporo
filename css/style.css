@@ -73,7 +73,11 @@ a { color: var(--accent); }
   color: var(--brand-text);
   padding: calc(14px + env(safe-area-inset-top)) 16px 14px;
 }
-.app-header h1 { margin: 0; font-size: 21px; font-weight: 700; }
+.app-header h1 {
+  margin: 0; font-size: 21px; font-weight: 700;
+  touch-action: manipulation;   /* 연속 탭해도 확대되지 않게 (관리자 메뉴) */
+  user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+}
 .subtitle { margin: 2px 0 0; font-size: 15px; opacity: .85; }
 
 .view { padding: 12px 16px 24px; max-width: 640px; margin: 0 auto; }

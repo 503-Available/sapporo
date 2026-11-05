@@ -8,6 +8,9 @@
 
   // ---------- 1. 상태 ----------
   var trip = null;            // trip.json 내용
+  var dataModified = '';      // trip.json 이 서버에 반영된 시각 (Last-Modified)
+  // 관리자 메뉴용 GitHub 주소
+  var REPO = 'https://github.com/503-Available/sapporo';
   var placeById = {};         // 장소 ID → 장소 (빠른 조회용)
   var state = { tab: 'schedule', dayIndex: 0 };
   var view = document.getElementById('view');
@@ -70,7 +73,11 @@
   // ---------- 4. 데이터 불러오기 ----------
   function init() {
     fetch('data/trip.json', { cache: 'no-cache' })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        dataModified = r.headers.get('last-modified') || '';
+        return r.json();
+      })
       .then(function (data) {
         trip = data;
         trip.places.forEach(function (p) { placeById[p.id] = p; });
@@ -86,6 +93,7 @@
         render();
         // 테스트용: ?place=youkobo 를 붙이면 해당 장소 상세 창을 바로 열기
         if (params.get('place')) openPlace(params.get('place'));
+        if (params.get('admin') === '1') openAdmin();
         // 앱을 켜 둔 채로 시간이 지나면 '지금' 카드를 갱신
         setInterval(function () { if (state.tab === 'schedule') render(); }, 60000);
       })
@@ -352,10 +360,50 @@
       '</div>' +
       '<button class="btn close" data-close>닫기</button>';
 
+    showSheet();
+  }
+  function showSheet() {
     sheet.hidden = false; backdrop.hidden = false;
     document.body.style.overflow = 'hidden';
     sheet.querySelector('[data-close]').focus();
   }
+
+  // ---------- 11-1. 🔧 숨은 관리자 메뉴 (제목 5번 탭) ----------
+  // 수정은 GitHub 로그인이 필요하므로 링크가 보여도 다른 사람은 고칠 수 없습니다.
+  function openAdmin() {
+    lastFocus = document.activeElement;
+    var when = '알 수 없음';
+    if (dataModified) {
+      var d = new Date(dataModified);
+      if (!isNaN(d)) when = (d.getMonth() + 1) + '/' + d.getDate() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    }
+    sheet.innerHTML = '<div class="grabber"></div>' +
+      '<h2>🔧 관리자 메뉴</h2>' +
+      '<div class="ja">아빠 전용 · 일정 데이터 수정</div>' +
+      '<dl><dt>🕒</dt><dd>지금 보는 데이터: <b>' + esc(when) + '</b> 배포본</dd></dl>' +
+      '<div class="actions">' +
+        '<a class="btn primary full" href="' + REPO + '/edit/main/data/trip.json" target="_blank" rel="noopener">✏️ 일정 데이터 수정하기</a>' +
+        '<a class="btn" href="' + REPO + '/actions" target="_blank" rel="noopener">🚀 배포 상태</a>' +
+        '<a class="btn" href="' + REPO + '/blob/main/data/trip.json" target="_blank" rel="noopener">📄 데이터 보기</a>' +
+        '<button class="btn full" data-reload>🔄 최신 버전으로 다시 열기</button>' +
+      '</div>' +
+      '<div class="tip">💡 수정 요령<br>' +
+        '· <b>글자만</b> 바꾸고 따옴표(") · 쉼표(,) · 괄호는 지우지 마세요<br>' +
+        '· 시간은 <b>"09:30"</b>처럼 두 자리:두 자리<br>' +
+        '· 저장: 오른쪽 위 <b>Commit changes</b> → 다시 Commit changes<br>' +
+        '· 1~2분 뒤 <b>🚀 배포 상태</b>가 초록 ✔이면 앱을 다시 여세요<br>' +
+        '· 앱이 안 열리면 쉼표·따옴표 실수! 데이터 보기에서 확인</div>' +
+      '<button class="btn close" data-close>닫기</button>';
+    showSheet();
+  }
+
+  var titleTaps = [];
+  document.getElementById('app-title').addEventListener('click', function () {
+    var now = Date.now();
+    titleTaps = titleTaps.filter(function (t) { return now - t < 2000; });
+    titleTaps.push(now);
+    if (titleTaps.length >= 5) { titleTaps = []; if (trip) openAdmin(); }
+  });
   function closeSheet() {
     sheet.hidden = true; backdrop.hidden = true;
     document.body.style.overflow = '';
@@ -395,7 +443,10 @@
   });
 
   backdrop.addEventListener('click', closeSheet);
-  sheet.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeSheet(); });
+  sheet.addEventListener('click', function (e) {
+    if (e.target.closest('[data-close]')) closeSheet();
+    if (e.target.closest('[data-reload]')) location.reload();
+  });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !sheet.hidden) closeSheet(); });
 
   // ---------- 13. 오프라인 지원 등록 (NFR-03) ----------
