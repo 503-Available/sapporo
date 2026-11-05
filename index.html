@@ -10,8 +10,8 @@
 
   <!-- PWA: 앱 이름·아이콘 (G3) -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1e3a5f" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f1b2d" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <!-- 아이폰 홈 화면 설치용 -->
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -20,11 +20,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="삿포로 2026">
 
+  <!-- 글꼴: Pretendard (못 받아오면 휴대폰 기본 글꼴, 화면 표시는 막지 않음) -->
+  <link rel="stylesheet" media="print" onload="this.media='all'"
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="app-header">
-    <h1 id="app-title">❄ 삿포로 가족여행 2026</h1>
+    <div class="title-row">
+      <h1 id="app-title">삿포로 가족여행 2026</h1>
+      <span id="dday" class="dday" hidden></span>
+    </div>
     <p id="app-subtitle" class="subtitle"></p>
   </header>
 
@@ -33,14 +39,14 @@
     <p class="loading">불러오는 중…</p>
   </main>
 
-  <!-- 하단 탭 5개 (J1) -->
+  <!-- 하단 탭 (아이콘은 app.js 가 채움) -->
   <nav class="tabbar" aria-label="메뉴">
-    <button data-tab="schedule" class="active"><span>📅</span>일정</button>
-    <button data-tab="food"><span>🍜</span>맛집</button>
-    <button data-tab="sight"><span>🗼</span>관광</button>
-    <button data-tab="shop"><span>🛍️</span>쇼핑</button>
-    <button data-tab="reserve"><span>📋</span>예약</button>
-    <button data-tab="subway"><span>🚇</span>지하철</button>
+    <button data-tab="schedule" data-icon="calendar" class="active"><span>일정</span></button>
+    <button data-tab="food" data-icon="utensils"><span>맛집</span></button>
+    <button data-tab="sight" data-icon="camera"><span>관광</span></button>
+    <button data-tab="shop" data-icon="bag"><span>쇼핑</span></button>
+    <button data-tab="reserve" data-icon="ticket"><span>예약</span></button>
+    <button data-tab="subway" data-icon="train"><span>지하철</span></button>
   </nav>
 
   <!-- 장소 상세: 아래에서 올라오는 창 (FR-02) -->

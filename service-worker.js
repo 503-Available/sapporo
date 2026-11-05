@@ -4,7 +4,7 @@
    - 여행 데이터(trip.json): 인터넷이 되면 최신본, 안 되면 저장본
    파일을 수정해서 다시 올릴 때는 VERSION 숫자를 올려 주세요.
    ========================================================= */
-var VERSION = 'v3';
+var VERSION = 'v4';
 var CACHE = 'sapporo2026-' + VERSION;
 var FILES = [
   './',
@@ -34,7 +34,21 @@ self.addEventListener('activate', function (e) {
 
 self.addEventListener('fetch', function (e) {
   var req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  if (req.method !== 'GET') return;
+
+  // 글꼴(Pretendard, jsdelivr CDN)은 한 번 받으면 저장해 두고 오프라인에서도 사용
+  if (new URL(req.url).hostname === 'cdn.jsdelivr.net') {
+    e.respondWith(
+      caches.match(req).then(function (hit) {
+        return hit || fetch(req).then(function (res) {
+          if (res.ok) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); }
+          return res;
+        });
+      })
+    );
+    return;
+  }
+  if (new URL(req.url).origin !== location.origin) return;
 
   // 여행 데이터는 최신 우선 (network-first)
   if (req.url.indexOf('data/trip.json') !== -1) {
