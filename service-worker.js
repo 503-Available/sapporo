@@ -4,7 +4,7 @@
    - 여행 데이터(trip.json): 인터넷이 되면 최신본, 안 되면 저장본
    파일을 수정해서 다시 올릴 때는 VERSION 숫자를 올려 주세요.
    ========================================================= */
-var VERSION = 'v4';
+var VERSION = 'v5';
 var CACHE = 'sapporo2026-' + VERSION;
 var FILES = [
   './',
@@ -15,7 +15,11 @@ var FILES = [
   'manifest.json',
   'icons/icon-192.png',
   'icons/icon-512.png',
-  'icons/apple-touch-icon.png'
+  'icons/apple-touch-icon.png',
+  'img/cover-day1.jpg',
+  'img/cover-day2.jpg',
+  'img/cover-day3.jpg',
+  'img/cover-day4.jpg'
 ];
 
 self.addEventListener('install', function (e) {

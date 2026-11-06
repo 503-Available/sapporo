@@ -156,6 +156,37 @@ a { color: var(--accent); }
 .badge.recommended { color: var(--amber); background: var(--amber-soft); }
 .badge.done { color: var(--green); background: var(--green-soft); }
 
+/* ---------- 5-1. 첫 화면 커버 사진 ---------- */
+body.hero-mode .app-header { display: none; }
+.hero {
+  position: relative; margin: -8px -16px 18px; min-height: 340px;
+  padding: calc(20px + env(safe-area-inset-top)) 22px 26px;
+  display: flex; align-items: flex-end;
+  background: #1e3a5f center / cover no-repeat;
+  border-radius: 0 0 28px 28px; overflow: hidden; color: #fff;
+}
+.hero::before {   /* 글씨가 잘 보이도록 아래쪽을 어둡게 */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.62) 100%);
+}
+.hero-inner { position: relative; width: 100%; }
+.hero-dday {
+  position: absolute; right: 0; bottom: 4px;
+  background: rgba(255,255,255,.22); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-radius: 999px; padding: 5px 13px; font-size: 14px; font-weight: 700;
+}
+.hero-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .14em; opacity: .85; }
+.hero-title {
+  margin: 4px 0 6px; font-size: 32px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+  touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+  text-shadow: 0 1px 12px rgba(0,0,0,.25);
+}
+.hero-meta { font-size: 15px; opacity: .92; padding-right: 76px; }
+.hero-credit {
+  position: absolute; top: calc(12px + env(safe-area-inset-top)); right: 14px;
+  font-size: 10.5px; opacity: .7; text-shadow: 0 1px 4px rgba(0,0,0,.5);
+}
+
 /* ---------- 6. 일자 선택 (세그먼트) ---------- */
 .segment {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;

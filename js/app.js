@@ -143,6 +143,8 @@
     document.querySelectorAll('.tabbar button').forEach(function (b) {
       b.classList.toggle('active', b.dataset.tab === state.tab);
     });
+    // 일정 탭은 커버 사진이 제목 역할 → 기본 헤더 숨김
+    document.body.classList.toggle('hero-mode', state.tab === 'schedule');
     view.innerHTML = {
       schedule: renderSchedule, food: renderFood, sight: renderSight,
       shop: renderShop, reserve: renderReserve, subway: renderSubway
@@ -159,6 +161,25 @@
   }
 
   // ---------- 7. 일정 (FR-01) ----------
+  // 첫 화면 커버: 선택한 Day의 대표 사진 + 제목 + D-day
+  function renderHero() {
+    var c = trip.days[state.dayIndex].cover || {};
+    var img = c.image, credit = c.credit;
+    var s = trip.startDate.split('-'), e = trip.endDate.split('-');
+    var d = daysUntil(trip.startDate);
+    var dday = d > 0 ? 'D-' + d : daysUntil(trip.endDate) >= 0 ? '여행 중' : '여행 끝';
+    return '<section class="hero"' + (img ? ' style="background-image:url(\'' + esc(img) + '\')"' : '') + '>' +
+      '<div class="hero-inner">' +
+        '<span class="hero-dday">' + esc(dday) + '</span>' +
+        '<div class="hero-kicker">' + esc(c.label || 'SAPPORO · HOKKAIDO') + '</div>' +
+        '<h2 class="hero-title" data-admin-tap>' + esc(trip.title.replace(/\s*\d{4}$/, '')) + '</h2>' +
+        '<div class="hero-meta">' + s[0] + '.' + (+s[1]) + '.' + (+s[2]) + ' – ' + (+e[1]) + '.' + (+e[2]) +
+          ' · 3박 4일</div>' +
+      '</div>' +
+      (credit ? '<span class="hero-credit">Photo · ' + esc(credit) + '</span>' : '') +
+      '</section>';
+  }
+
   function renderSchedule() {
     var day = trip.days[state.dayIndex];
     var isToday = day.date === todayStr();
@@ -199,7 +220,7 @@
       });
     }).join('') + '</ul>';
 
-    return seg + head + top + list;
+    return renderHero() + seg + head + top + list;
   }
 
   // ---------- 8. 맛집 (FR-04) ----------
@@ -394,13 +415,16 @@
     showSheet();
   }
 
+  // 제목(상단 제목 또는 커버 제목)을 2초 안에 5번 누르면 관리자 메뉴
   var titleTaps = [];
-  document.getElementById('app-title').addEventListener('click', function () {
+  function titleTap() {
     var now = Date.now();
     titleTaps = titleTaps.filter(function (t) { return now - t < 2000; });
     titleTaps.push(now);
     if (titleTaps.length >= 5) { titleTaps = []; if (trip) openAdmin(); }
-  });
+  }
+  document.getElementById('app-title').addEventListener('click', titleTap);
+  view.addEventListener('click', function (e) { if (e.target.closest('[data-admin-tap]')) titleTap(); });
 
   // ---------- 15. 터치·클릭 처리 ----------
   document.querySelectorAll('.tabbar button').forEach(function (b) {
