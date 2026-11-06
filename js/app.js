@@ -52,7 +52,12 @@
     file: '<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8l-5-5z"/><path d="M14 3v5h5"/>',
     refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
     external: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
-    snow: '<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 2 3-2M9 20l3-2 3 2"/>'
+    snow: '<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 2 3-2M9 20l3-2 3 2"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    cloudSun: '<path d="M12 3v1.5M5.6 5.6l1 1M3 12h1.5M17.4 6.6l1-1"/><path d="M8.5 11a3.5 3.5 0 0 1 6.6-1.6"/><path d="M9 20h8a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.6 1.4A2.8 2.8 0 0 0 9 20z"/>',
+    cloud: '<path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 9.5 4.25 4.25 0 0 0 7 18z"/>',
+    rain: '<path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 6.5 4.25 4.25 0 0 0 7 15z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/>',
+    fog: '<path d="M4 9h16M3 13h18M5 17h14"/>'
   };
   function icon(name, cls) {
     return '<svg class="ico' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + (ICON[name] || '') + '</svg>';
@@ -98,6 +103,76 @@
   var RESV_LABEL = { required: '예약 필수', recommended: '예약 권장', done: '예약 완료' };
   function badge(r) { return r ? '<span class="badge ' + esc(r) + '">' + RESV_LABEL[r] + '</span>' : ''; }
 
+  // ---------- 4-1. 날씨 (Open-Meteo 무료 예보, 인증키 불필요) ----------
+  // 예보는 휴대폰에 저장해 두고(오프라인용) 3시간마다 새로 받음. 예보가 없는 날은 평년 기온 표시.
+  var WX_TTL = 3 * 60 * 60 * 1000;
+  function wxKey(w) { return w.lat + ',' + w.lon; }
+  function fetchWeather() {
+    var cache = load('weather', null);
+    if (cache && Date.now() - cache.fetchedAt < WX_TTL) return;
+    var spots = {};
+    trip.days.forEach(function (d) { if (d.weather) spots[wxKey(d.weather)] = d.weather; });
+    var keys = Object.keys(spots);
+    if (!keys.length) return;
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' +
+      keys.map(function (k) { return spots[k].lat; }).join(',') +
+      '&longitude=' + keys.map(function (k) { return spots[k].lon; }).join(',') +
+      '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max' +
+      '&timezone=Asia%2FTokyo&forecast_days=16';
+    fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (res) {
+        var list = Array.isArray(res) ? res : [res];
+        var byKey = {};
+        keys.forEach(function (k, i) { if (list[i] && list[i].daily) byKey[k] = list[i].daily; });
+        save('weather', { fetchedAt: Date.now(), byKey: byKey });
+        if (state.tab === 'schedule') render();
+      })
+      .catch(function () { /* 오프라인 등 → 저장본 또는 평년값 사용 */ });
+  }
+  // WMO 날씨 코드 → [아이콘, 한국어]
+  function wxLabel(code) {
+    if (code === 0) return ['sun', '맑음'];
+    if (code <= 2) return ['cloudSun', '구름 조금'];
+    if (code === 3) return ['cloud', '흐림'];
+    if (code === 45 || code === 48) return ['fog', '안개'];
+    if (code >= 51 && code <= 57) return ['rain', '이슬비'];
+    if (code >= 61 && code <= 67) return ['rain', '비'];
+    if (code >= 71 && code <= 77) return ['snow', '눈'];
+    if (code >= 80 && code <= 82) return ['rain', '소나기'];
+    if (code === 85 || code === 86) return ['snow', '눈 소나기'];
+    if (code >= 95) return ['rain', '뇌우'];
+    return ['cloud', '흐림'];
+  }
+  function wearTip(low) {
+    if (low <= -3) return '두꺼운 패딩 · 장갑 · 목도리 필수';
+    if (low <= 2) return '패딩 + 미끄럼 방지 신발';
+    return '가벼운 패딩 · 겹쳐 입기';
+  }
+  function renderWeather(day) {
+    var w = day.weather;
+    if (!w) return '';
+    var cache = load('weather', null), daily = cache && cache.byKey && cache.byKey[wxKey(w)];
+    var i = daily ? daily.time.indexOf(day.date) : -1;
+    var html;
+    if (i >= 0 && daily.temperature_2m_max[i] != null) {
+      var lb = wxLabel(daily.weather_code[i]);
+      var hi = Math.round(daily.temperature_2m_max[i]), lo = Math.round(daily.temperature_2m_min[i]);
+      var pop = daily.precipitation_probability_max[i];
+      var at = new Date(cache.fetchedAt);
+      html = '<span class="w-ico">' + icon(lb[0]) + '</span><div class="w-body">' +
+        '<div class="w-main"><b>' + lb[1] + '</b><span class="w-temp">' + hi + '° / ' + lo + '°</span></div>' +
+        '<div class="w-sub">' + esc(w.place) + (pop != null ? ' · 강수 ' + pop + '%' : '') + ' · ' + wearTip(lo) + '</div>' +
+        '<div class="w-src">예보 ' + (at.getMonth() + 1) + '/' + at.getDate() + ' ' + pad(at.getHours()) + ':' + pad(at.getMinutes()) +
+        ' 기준 · 날씨 정보 Open-Meteo</div></div>';
+    } else {
+      html = '<span class="w-ico normal">' + icon('snow') + '</span><div class="w-body">' +
+        '<div class="w-main"><b>평년 기온</b><span class="w-temp">' + w.normalHigh + '° / ' + w.normalLow + '°</span></div>' +
+        '<div class="w-sub">' + esc(w.place) + ' · ' + wearTip(w.normalLow) + '</div>' +
+        '<div class="w-src">예보는 여행 약 2주 전부터 표시돼요 · 날짜가 가까울수록 정확해요</div></div>';
+    }
+    return '<div class="card weather">' + html + '</div>';
+  }
+
   // ---------- 5. 데이터 불러오기 ----------
   function init() {
     fetch('data/trip.json', { cache: 'no-cache' })
@@ -120,6 +195,19 @@
         render();
         if (params.get('place')) openPlace(params.get('place'));
         if (params.get('admin') === '1') openAdmin();
+        // 테스트용: ?wxdemo=1 → 예보 화면 미리보기 (11/6 실제 예보 값 일부)
+        if (params.get('wxdemo') === '1') {
+          var demo = { time: ['2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23'],
+            weather_code: [3, 51, 71, 1], temperature_2m_max: [1.6, 2.5, -0.4, 4.1],
+            temperature_2m_min: [-3.9, -2.3, -7.2, -1.5], precipitation_probability_max: [39, 27, 60, 10] };
+          var bk = {};
+          trip.days.forEach(function (d) { if (d.weather) bk[wxKey(d.weather)] = demo; });
+          save('weather', { fetchedAt: Date.now(), byKey: bk });
+          render();
+        } else {
+          fetchWeather();
+        }
+        window.addEventListener('online', fetchWeather);
         setInterval(function () { if (state.tab === 'schedule') render(); }, 60000);
       })
       .catch(function () {
@@ -220,7 +308,7 @@
       });
     }).join('') + '</ul>';
 
-    return renderHero() + seg + head + top + list;
+    return renderHero() + seg + head + renderWeather(day) + top + list;
   }
 
   // ---------- 8. 맛집 (FR-04) ----------

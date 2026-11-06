@@ -12,6 +12,7 @@
       "label": "Day 1",
       "theme": "도착 · 일루미네이션 개막일",
       "cover": { "image": "img/cover-day1.jpg", "label": "SAPPORO · TV TOWER", "credit": "Y K / Unsplash" },
+      "weather": { "place": "삿포로", "lat": 43.0618, "lon": 141.3545, "normalHigh": 5, "normalLow": -1 },
       "items": [
         { "time": "12:55", "type": "flight", "title": "인천 출발 (대한항공)", "placeId": "icn", "reservation": "done" },
         { "time": "15:40", "type": "flight", "title": "신치토세 공항 도착", "placeId": "cts", "note": "입국 수속 약 40분" },
@@ -28,6 +29,7 @@
       "label": "Day 2",
       "theme": "오타루 · 맥주박물관 · 모이와산 야경",
       "cover": { "image": "img/cover-day2.jpg", "label": "OTARU · CANAL", "credit": "Da-shika / Unsplash" },
+      "weather": { "place": "오타루", "lat": 43.1907, "lon": 140.9947, "normalHigh": 5, "normalLow": -1 },
       "items": [
         { "time": "07:30", "type": "food", "title": "아침: 호텔 조식", "placeId": "hotel" },
         { "time": "08:45", "type": "move", "title": "JR 삿포로 → 오타루", "note": "약 40분 · 오타루역 하차" },
@@ -47,6 +49,7 @@
       "label": "Day 3",
       "theme": "비에이 · 후라노 버스투어 (엔데이트립)",
       "cover": { "image": "img/cover-day3.jpg", "label": "BIEI · FURANO", "credit": "TERRA / Unsplash" },
+      "weather": { "place": "비에이", "lat": 43.5883, "lon": 142.467, "normalHigh": 2, "normalLow": -6 },
       "items": [
         { "time": "07:10", "type": "move", "title": "호텔 출발 → 투어 집합 장소", "note": "늦지 않게 여유 있게 출발" },
         { "time": "07:30", "type": "tour", "title": "투어 집합", "placeId": "tour", "reservation": "done", "note": "출발 정각 · 집합 장소는 바우처로 확인" },
@@ -66,6 +69,7 @@
       "label": "Day 4",
       "theme": "쇼핑 · 귀국 (일본 공휴일)",
       "cover": { "image": "img/cover-day4.jpg", "label": "SAPPORO · CITY VIEW", "credit": "Nao Takabayashi / Unsplash" },
+      "weather": { "place": "삿포로", "lat": 43.0618, "lon": 141.3545, "normalHigh": 5, "normalLow": -1 },
       "items": [
         { "time": "08:00", "type": "food", "title": "아침: 니조시장 해산물 덮밥", "placeId": "oiso" },
         { "time": "08:45", "type": "food", "title": "니조시장 구경 + 게 맛보기 🦀", "placeId": "nijo", "note": "삶은 털게를 사면 그 자리에서 먹기 좋게 손질해 줘요" },
