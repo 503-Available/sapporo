@@ -275,6 +275,7 @@ body.hero-mode .app-header { display: none; }
   padding: 8px 20px calc(20px + env(safe-area-inset-bottom));
   max-width: 640px; margin: 0 auto;
   animation: up .22s ease-out;
+  outline: none;
 }
 @keyframes up { from { transform: translateY(100%); } to { transform: none; } }
 .sheet .grabber { width: 40px; height: 5px; border-radius: 9px; background: var(--line); margin: 4px auto 16px; }

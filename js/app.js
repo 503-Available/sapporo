@@ -531,7 +531,10 @@
   function showSheet() {
     sheet.hidden = false; backdrop.hidden = false;
     document.body.style.overflow = 'hidden';
-    sheet.querySelector('[data-close]').focus();
+    // 닫기 버튼(맨 아래)에 초점을 주면 창이 아래로 스크롤되므로 창 자체에 초점을 주고 맨 위부터 표시
+    sheet.tabIndex = -1;
+    sheet.focus({ preventScroll: true });
+    sheet.scrollTop = 0;
   }
   function closeSheet() {
     sheet.hidden = true; backdrop.hidden = true;
