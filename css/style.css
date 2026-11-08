@@ -130,6 +130,8 @@ a { color: var(--accent); }
 .row .t { font-weight: 600; display: block; }
 .row .n { font-size: 14px; color: var(--text-sub); display: block; margin-top: 1px; }
 .row .chev { color: var(--text-faint); }
+.row .sig { display: flex; gap: 5px; align-items: flex-start; font-size: 14.5px; font-weight: 600; margin-top: 3px; }
+.row .sig .ico { width: 14px; height: 14px; margin-top: 4px; color: var(--amber); fill: currentColor; }
 
 /* 아이콘 타일 */
 .tile {

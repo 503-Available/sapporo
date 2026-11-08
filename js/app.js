@@ -57,7 +57,8 @@
     cloudSun: '<path d="M12 3v1.5M5.6 5.6l1 1M3 12h1.5M17.4 6.6l1-1"/><path d="M8.5 11a3.5 3.5 0 0 1 6.6-1.6"/><path d="M9 20h8a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.6 1.4A2.8 2.8 0 0 0 9 20z"/>',
     cloud: '<path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 9.5 4.25 4.25 0 0 0 7 18z"/>',
     rain: '<path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 6.5 4.25 4.25 0 0 0 7 15z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/>',
-    fog: '<path d="M4 9h16M3 13h18M5 17h14"/>'
+    fog: '<path d="M4 9h16M3 13h18M5 17h14"/>',
+    star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/>'
   };
   function icon(name, cls) {
     return '<svg class="ico' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + (ICON[name] || '') + '</svg>';
@@ -326,7 +327,9 @@
         var what = foods.length ? foods.join(', ') : it.title.replace(/^[^:]*:\s*/, '');
         return row({
           place: p.id, lead: '<span class="time">' + esc(it.time) + '</span>' + tile('food'),
-          title: esc(p.name), sub: esc(what + (p.price ? ' · ' + p.price : '')), extra: badge(p.reservation)
+          title: esc(p.name),
+          extra: (p.signature || []).map(function (s) { return '<span class="sig">' + icon('star') + '<span>' + esc(s) + '</span></span>'; }).join('') +
+            '<span class="n">' + esc(p.signature ? (p.price || '') : what + (p.price ? ' · ' + p.price : '')) + '</span>' + badge(p.reservation)
         });
       });
       return rows.length ? '<h2 class="section-title">' + esc(d.label) + ' · ' + esc(dateLabel(d.date)) + '</h2>' +
@@ -447,6 +450,7 @@
     if (!p) return;
     lastFocus = document.activeElement;
     var rows = [
+      ['star', p.signature ? '대표 메뉴: ' + p.signature.join(' · ') : ''],
       ['pin', p.address], ['clock', p.hours], ['ban', p.closed ? '휴무 ' + p.closed : ''],
       ['yen', p.price], ['phone', p.tel]
     ].filter(function (r) { return r[1]; });
