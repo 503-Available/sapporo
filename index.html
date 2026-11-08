@@ -47,11 +47,15 @@
     <button data-tab="shop" data-icon="bag"><span>쇼핑</span></button>
     <button data-tab="reserve" data-icon="ticket"><span>예약</span></button>
     <button data-tab="subway" data-icon="train"><span>지하철</span></button>
+    <button data-tab="guide" data-icon="info"><span>안내</span></button>
   </nav>
 
   <!-- 장소 상세: 아래에서 올라오는 창 (FR-02) -->
   <div id="sheet-backdrop" class="sheet-backdrop" hidden></div>
   <section id="sheet" class="sheet" role="dialog" aria-modal="true" hidden></section>
+
+  <!-- 현지인에게 보여 주는 큰 글씨 화면 -->
+  <div id="show-card" class="show-card" role="dialog" aria-modal="true" tabindex="-1" hidden></div>
 
   <script src="js/app.js"></script>
 </body>

@@ -58,7 +58,9 @@
     cloud: '<path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 9.5 4.25 4.25 0 0 0 7 18z"/>',
     rain: '<path d="M7 15h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 6.5 4.25 4.25 0 0 0 7 15z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/>',
     fog: '<path d="M4 9h16M3 13h18M5 17h14"/>',
-    star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/>'
+    star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/>',
+    speak: '<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 11h8"/>'
   };
   function icon(name, cls) {
     return '<svg class="ico' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + (ICON[name] || '') + '</svg>';
@@ -190,7 +192,7 @@
         state.dayIndex = idx >= 0 ? idx : load('dayIndex', 0);
         if (!trip.days[state.dayIndex]) state.dayIndex = 0;
         var hashTab = location.hash.slice(1);
-        var TABS = ['schedule', 'food', 'sight', 'shop', 'reserve', 'subway'];
+        var TABS = ['schedule', 'food', 'sight', 'shop', 'reserve', 'subway', 'guide'];
         state.tab = TABS.indexOf(hashTab) >= 0 ? hashTab : load('tab', 'schedule');
         renderHeader();
         render();
@@ -236,7 +238,7 @@
     document.body.classList.toggle('hero-mode', state.tab === 'schedule');
     view.innerHTML = {
       schedule: renderSchedule, food: renderFood, sight: renderSight,
-      shop: renderShop, reserve: renderReserve, subway: renderSubway
+      shop: renderShop, reserve: renderReserve, subway: renderSubway, guide: renderGuide
     }[state.tab]();
   }
 
@@ -440,6 +442,64 @@
       '<a class="btn" href="' + esc(s.officialUrl) + '" target="_blank" rel="noopener">' + icon('external') + '공식 노선도 · 역 구내도</a>';
   }
 
+  // ---------- 12-1. 안내 탭: 입출국 · 긴급 연락처 · 현지어 · 플랜 B ----------
+  function lineList(lines) {
+    return '<ul class="tips-list">' + lines.map(function (t) {
+      return '<li>' + icon('check') + '<span>' + esc(t) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+  function extLink(url, label, iconName) {
+    return '<a class="btn guide-btn" href="' + esc(url) + '" target="_blank" rel="noopener">' + icon(iconName) + esc(label) + '</a>';
+  }
+  function renderGuide() {
+    var g = trip.guide;
+    var travel = g.travel.map(function (c) {
+      return '<div class="card"><div class="guide-title">' + esc(c.title) + '</div>' + lineList(c.lines) +
+        (c.link ? extLink(c.link.url, c.link.label, 'external') : '') + '</div>';
+    }).join('');
+    var sos = '<ul class="list">' + g.emergency.map(function (e) {
+      return '<li class="row">' + '<span class="tile t-shop">' + icon('phone') + '</span>' +
+        '<span class="body"><span class="t">' + esc(e.title) + '</span>' +
+        '<span class="n">' + esc(e.desc) + '</span><span class="n">' + esc(e.number) + '</span></span>' +
+        '<a class="call" href="tel:' + esc(e.dial) + '">전화</a></li>';
+    }).join('') + '</ul>' +
+      '<p class="muted guide-note">호텔 전화번호는 예약 확인서에서 확인하세요.</p>';
+    var talk = '<ul class="list">' + g.phrases.map(function (p, i) {
+      return '<li class="row clickable" data-phrase="' + i + '" tabindex="0">' +
+        '<span class="tile t-flight">' + icon('speak') + '</span>' +
+        '<span class="body"><span class="t">' + esc(p.ko) + '</span></span>' +
+        '<span class="chev">' + icon('chev', 'sm') + '</span></li>';
+    }).join('') + '</ul>';
+    var planB = g.planB.map(function (b) {
+      var btn = b.placeId ? '<button class="btn guide-btn" data-place="' + esc(b.placeId) + '">' + icon('pin') + '장소 정보 보기</button>'
+        : b.map ? extLink(mapUrl(b.map), b.mapLabel || '길찾기', 'nav') : '';
+      return '<div class="card"><div class="guide-title">' + esc(b.when) + '</div>' + lineList(b.lines) + btn + '</div>';
+    }).join('');
+    return '<h2 class="section-title">입출국 · 면세</h2>' + travel +
+      '<h2 class="section-title">긴급 연락처</h2>' + sos +
+      '<h2 class="section-title">현지인에게 보여 주기</h2>' +
+      '<p class="muted guide-note">누르면 일본어가 화면 가득 크게 나와요.</p>' + talk +
+      '<h2 class="section-title">이럴 땐 플랜 B</h2>' + planB;
+  }
+
+  // 현지인에게 보여 주는 큰 글씨 화면
+  var showCardEl = document.getElementById('show-card');
+  var showFocus = null;
+  function showCard(main, sub, ko) {
+    showFocus = document.activeElement;
+    showCardEl.innerHTML = '<div class="sc-ko">' + esc(ko) + '</div>' +
+      '<div class="sc-main" lang="ja">' + esc(main) + '</div>' +
+      (sub ? '<div class="sc-sub" lang="ja">' + esc(sub) + '</div>' : '') +
+      '<div class="sc-hint">화면을 누르면 닫혀요</div>';
+    showCardEl.hidden = false;
+    showCardEl.focus();
+  }
+  function closeCard() {
+    showCardEl.hidden = true;
+    if (showFocus) showFocus.focus();
+  }
+  showCardEl.addEventListener('click', closeCard);
+
   // ---------- 13. 장소 상세 창 (FR-02) ----------
   var sheet = document.getElementById('sheet');
   var backdrop = document.getElementById('sheet-backdrop');
@@ -461,8 +521,9 @@
       '<ul class="info">' + rows.map(function (r) { return '<li>' + icon(r[0]) + '<span>' + esc(r[1]) + '</span></li>'; }).join('') + '</ul>' +
       (p.tip ? '<div class="tip">' + icon('bulb') + '<span>' + esc(p.tip) + '</span></div>' : '') +
       '<div class="actions">' +
-        '<a class="btn primary' + (p.tel ? '' : ' full') + '" href="' + esc(mapUrl(p.map || p.nameJa || p.name)) + '" target="_blank" rel="noopener">' + icon('nav') + '길찾기</a>' +
-        (p.tel ? '<a class="btn" href="' + esc(telUrl(p.tel)) + '">' + icon('phone') + '전화</a>' : '') +
+        (p.map ? '<a class="btn primary' + (p.tel ? '' : ' full') + '" href="' + esc(mapUrl(p.map)) + '" target="_blank" rel="noopener">' + icon('nav') + '길찾기</a>' : '') +
+        (p.tel ? '<a class="btn' + (p.map ? '' : ' full') + '" href="' + esc(telUrl(p.tel)) + '">' + icon('phone') + '전화</a>' : '') +
+        (p.nameJa && p.localCard !== false ? '<button class="btn full" data-local="' + esc(p.id) + '">' + icon('speak') + '현지인에게 보여 주기</button>' : '') +
       '</div>' +
       '<button class="btn close" data-close>닫기</button>';
     showSheet();
@@ -533,6 +594,8 @@
     var dayBtn = e.target.closest('[data-day]');
     if (dayBtn) { state.dayIndex = +dayBtn.dataset.day; save('dayIndex', state.dayIndex); render(); return; }
     if (e.target.closest('input, label')) return;
+    var phrase = e.target.closest('[data-phrase]');
+    if (phrase) { var ph = trip.guide.phrases[+phrase.dataset.phrase]; showCard(ph.ja, '', ph.ko); return; }
     var pl = e.target.closest('[data-place]');
     if (pl) openPlace(pl.dataset.place);
   });
@@ -540,14 +603,23 @@
     if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-place][tabindex]')) {
       e.preventDefault(); openPlace(e.target.dataset.place);
     }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-phrase]')) {
+      e.preventDefault(); e.target.click();
+    }
   });
 
   backdrop.addEventListener('click', closeSheet);
   sheet.addEventListener('click', function (e) {
     if (e.target.closest('[data-close]')) closeSheet();
     if (e.target.closest('[data-reload]')) location.reload();
+    var local = e.target.closest('[data-local]');
+    if (local) { var lp = placeById[local.dataset.local]; showCard(lp.nameJa, 'ここへ行きたいです', lp.name); }
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !sheet.hidden) closeSheet(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!showCardEl.hidden) closeCard();
+    else if (!sheet.hidden) closeSheet();
+  });
 
   // ---------- 16. 오프라인 지원 등록 (NFR-03) ----------
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {

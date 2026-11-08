@@ -4,7 +4,7 @@
    - 여행 데이터(trip.json): 인터넷이 되면 최신본, 안 되면 저장본
    파일을 수정해서 다시 올릴 때는 VERSION 숫자를 올려 주세요.
    ========================================================= */
-var VERSION = 'v7';
+var VERSION = 'v9';
 var CACHE = 'sapporo2026-' + VERSION;
 var FILES = [
   './',
@@ -30,7 +30,7 @@ self.addEventListener('install', function (e) {
 self.addEventListener('activate', function (e) {
   e.waitUntil(
     caches.keys().then(function (keys) {
-      return Promise.all(keys.filter(function (k) { return k !== CACHE; })
+      return Promise.all(keys.filter(function (k) { return k.indexOf('sapporo2026-') === 0 && k !== CACHE; })
         .map(function (k) { return caches.delete(k); }));
     }).then(function () { return self.clients.claim(); })
   );
@@ -58,9 +58,12 @@ self.addEventListener('fetch', function (e) {
   if (req.url.indexOf('data/trip.json') !== -1) {
     e.respondWith(
       fetch(req).then(function (res) {
+        if (!res.ok) throw new Error(res.status);
+        // JSON이 정상일 때만 저장본을 교체 (수정 실수로 저장본이 망가지지 않게)
         var copy = res.clone();
-        caches.open(CACHE).then(function (c) { c.put('data/trip.json', copy); });
-        return res;
+        return res.clone().json().then(function () {
+          return caches.open(CACHE).then(function (c) { return c.put('data/trip.json', copy); });
+        }).then(function () { return res; });
       }).catch(function () { return caches.match('data/trip.json'); })
     );
     return;
