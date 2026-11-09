@@ -60,6 +60,7 @@
     fog: '<path d="M4 9h16M3 13h18M5 17h14"/>',
     star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/>',
     info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/>',
+    sound: '<path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/>',
     speak: '<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 11h8"/>'
   };
   function icon(name, cls) {
@@ -485,20 +486,55 @@
   // 현지인에게 보여 주는 큰 글씨 화면
   var showCardEl = document.getElementById('show-card');
   var showFocus = null;
-  function showCard(main, sub, ko) {
+  var cardSay = '';
+  var canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+  // 음성 목록은 늦게 준비되는 기기가 있어 미리 한 번 요청
+  if (canSpeak) { try { window.speechSynthesis.getVoices(); } catch (e) { canSpeak = false; } }
+
+  // o: { main, sub, ko, read, subRead, say }
+  function showCard(o) {
     showFocus = document.activeElement;
-    showCardEl.innerHTML = '<div class="sc-ko">' + esc(ko) + '</div>' +
-      '<div class="sc-main" lang="ja">' + esc(main) + '</div>' +
-      (sub ? '<div class="sc-sub" lang="ja">' + esc(sub) + '</div>' : '') +
-      '<div class="sc-hint">화면을 누르면 닫혀요</div>';
+    cardSay = o.say || '';
+    showCardEl.innerHTML = '<div class="sc-ko">' + esc(o.ko) + '</div>' +
+      '<div class="sc-main' + (o.main.length > 14 ? ' long' : '') + '" lang="ja">' + esc(o.main) + '</div>' +
+      (o.sub ? '<div class="sc-sub" lang="ja">' + esc(o.sub) + '</div>' : '') +
+      (o.read ? '<div class="sc-read"><span>읽는 법</span>' + esc(o.read) +
+        (o.subRead ? '<br>' + esc(o.subRead) : '') + '</div>' : '') +
+      (canSpeak && cardSay ? '<button class="btn primary sc-say" data-say>' + icon('sound') + '일본어로 듣기</button>' : '') +
+      '<div class="sc-msg" role="status"></div>' +
+      '<div class="sc-hint">다른 곳을 누르면 닫혀요</div>';
     showCardEl.hidden = false;
-    showCardEl.focus();
+    showCardEl.scrollTop = 0;
+    showCardEl.focus({ preventScroll: true });
   }
   function closeCard() {
+    if (canSpeak) window.speechSynthesis.cancel();
     showCardEl.hidden = true;
     if (showFocus) showFocus.focus();
   }
-  showCardEl.addEventListener('click', closeCard);
+  // 휴대폰에 내장된 일본어 음성으로 읽기 (Web Speech API)
+  function sayJapanese() {
+    var msg = showCardEl.querySelector('.sc-msg');
+    msg.textContent = '';
+    var synth = window.speechSynthesis;
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(cardSay);
+    u.lang = 'ja-JP';
+    u.rate = 0.85;
+    var voices = synth.getVoices();
+    var ja = voices.filter(function (v) { return /^ja/i.test(v.lang); })[0];
+    if (ja) u.voice = ja;
+    else if (voices.length) msg.textContent = '일본어 음성이 없을 수 있어요. 휴대폰 설정에서 일본어 음성을 추가해 주세요.';
+    u.onerror = function (e) {
+      if (e.error === 'canceled' || e.error === 'interrupted') return;
+      msg.textContent = '음성을 재생하지 못했어요. 볼륨과 무음 모드를 확인해 주세요.';
+    };
+    synth.speak(u);
+  }
+  showCardEl.addEventListener('click', function (e) {
+    if (e.target.closest('[data-say]')) { sayJapanese(); return; }
+    closeCard();
+  });
 
   // ---------- 13. 장소 상세 창 (FR-02) ----------
   var sheet = document.getElementById('sheet');
@@ -598,7 +634,11 @@
     if (dayBtn) { state.dayIndex = +dayBtn.dataset.day; save('dayIndex', state.dayIndex); render(); return; }
     if (e.target.closest('input, label')) return;
     var phrase = e.target.closest('[data-phrase]');
-    if (phrase) { var ph = trip.guide.phrases[+phrase.dataset.phrase]; showCard(ph.ja, '', ph.ko); return; }
+    if (phrase) {
+      var ph = trip.guide.phrases[+phrase.dataset.phrase];
+      showCard({ main: ph.ja, ko: ph.ko, read: ph.read, say: ph.speakJa || ph.ja });
+      return;
+    }
     var pl = e.target.closest('[data-place]');
     if (pl) openPlace(pl.dataset.place);
   });
@@ -616,7 +656,14 @@
     if (e.target.closest('[data-close]')) closeSheet();
     if (e.target.closest('[data-reload]')) location.reload();
     var local = e.target.closest('[data-local]');
-    if (local) { var lp = placeById[local.dataset.local]; showCard(lp.nameJa, 'ここへ行きたいです', lp.name); }
+    if (local) {
+      var lp = placeById[local.dataset.local];
+      showCard({
+        main: lp.nameJa, sub: 'ここへ行きたいです', ko: lp.name,
+        read: lp.read, subRead: '코코에 이키타이데스',
+        say: (lp.speakJa || lp.nameJa) + '。ここへ行きたいです'
+      });
+    }
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
