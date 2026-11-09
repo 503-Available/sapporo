@@ -358,6 +358,8 @@ details[open].card summary .chev { transform: rotate(90deg); }
 .sc-say { width: 100%; max-width: 520px; flex: none; background: #2563eb; color: #fff; }
 .sc-msg { font-size: 14.5px; color: #dc2626; min-height: 0; }
 .sc-msg:empty { display: none; }
+.sc-alt { width: 100%; max-width: 520px; flex: none; background: #f0f2f5; color: #111; }
+.sc-alt[hidden] { display: none; }
 .sc-main { font-size: clamp(36px, 11vw, 64px); font-weight: 800; line-height: 1.3; overflow-wrap: anywhere; }
 .sc-sub { font-size: clamp(24px, 7vw, 40px); font-weight: 700; line-height: 1.3; }
 .sc-hint { font-size: 14px; color: #9ca3af; margin-bottom: auto; }

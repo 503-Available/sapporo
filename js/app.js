@@ -500,39 +500,88 @@
       (o.sub ? '<div class="sc-sub" lang="ja">' + esc(o.sub) + '</div>' : '') +
       (o.read ? '<div class="sc-read"><span>읽는 법</span>' + esc(o.read) +
         (o.subRead ? '<br>' + esc(o.subRead) : '') + '</div>' : '') +
-      (canSpeak && cardSay ? '<button class="btn primary sc-say" data-say>' + icon('sound') + '일본어로 듣기</button>' : '') +
+      (canSpeak && cardSay ? '<button class="btn primary sc-say" data-say>' + icon('sound') + '<span class="sc-say-label">일본어로 듣기</span></button>' : '') +
       '<div class="sc-msg" role="status"></div>' +
+      (cardSay ? '<a class="btn sc-alt" hidden href="' + esc(translateUrl(cardSay)) + '" target="_blank" rel="noopener">' + icon('external') + 'Google 번역에서 듣기</a>' : '') +
       '<div class="sc-hint">다른 곳을 누르면 닫혀요</div>';
     showCardEl.hidden = false;
     showCardEl.scrollTop = 0;
     showCardEl.focus({ preventScroll: true });
   }
+  function translateUrl(text) {
+    return 'https://translate.google.com/?sl=ja&tl=ko&op=translate&text=' + encodeURIComponent(text);
+  }
   function closeCard() {
-    if (canSpeak) window.speechSynthesis.cancel();
+    stopSpeech();
     showCardEl.hidden = true;
     if (showFocus) showFocus.focus();
   }
   // 휴대폰에 내장된 일본어 음성으로 읽기 (Web Speech API)
-  function sayJapanese() {
+  var speech = { id: 0, playing: false, utterance: null, timer: null };
+  function setSayLabel(text) {
+    var el = showCardEl.querySelector('.sc-say-label');
+    if (el) el.textContent = text;
+  }
+  function finishSpeech() {
+    speech.playing = false;
+    clearTimeout(speech.timer);
+    setSayLabel('일본어로 듣기');
+  }
+  function stopSpeech() {
+    speech.id++;                       // 진행 중이던 음성의 결과는 무시
+    finishSpeech();
+    if (canSpeak) window.speechSynthesis.cancel();
+  }
+  // 재생 실패: 원인 코드와 대체 수단(Google 번역)을 보여 줌
+  function speechFailed(code, voices) {
+    finishSpeech();
+    var ja = voices.filter(function (v) { return /^ja/i.test(v.lang); }).length;
     var msg = showCardEl.querySelector('.sc-msg');
-    msg.textContent = '';
+    msg.textContent = (ja ? '소리를 내지 못했어요. 볼륨과 무음 모드를 확인해 주세요.'
+      : '이 휴대폰에서 일본어 음성을 찾지 못했어요. 설정에서 일본어 음성을 추가해 주세요.') +
+      ' (원인: ' + code + ' · 음성 ' + voices.length + '개 · 일본어 ' + ja + '개)';
+    var alt = showCardEl.querySelector('.sc-alt');
+    if (alt) alt.hidden = false;
+  }
+  function startSpeech() {
     var synth = window.speechSynthesis;
-    synth.cancel();
+    var id = ++speech.id;
+    var voices = synth.getVoices();
+    var ja = voices.filter(function (v) { return /^ja/i.test(v.lang); })[0];
     var u = new SpeechSynthesisUtterance(cardSay);
     u.lang = 'ja-JP';
     u.rate = 0.85;
-    var voices = synth.getVoices();
-    var ja = voices.filter(function (v) { return /^ja/i.test(v.lang); })[0];
+    u.volume = 1;
     if (ja) u.voice = ja;
-    else if (voices.length) msg.textContent = '일본어 음성이 없을 수 있어요. 휴대폰 설정에서 일본어 음성을 추가해 주세요.';
-    u.onerror = function (e) {
-      if (e.error === 'canceled' || e.error === 'interrupted') return;
-      msg.textContent = '음성을 재생하지 못했어요. 볼륨과 무음 모드를 확인해 주세요.';
+    var started = false;
+    u.onstart = function () { if (id !== speech.id) return; started = true; clearTimeout(speech.timer); };
+    u.onend = function () {
+      if (id !== speech.id) return;
+      if (started) finishSpeech(); else speechFailed('no-audio', synth.getVoices());
     };
+    u.onerror = function (e) { if (id === speech.id) speechFailed(e.error || 'error', synth.getVoices()); };
+    speech.utterance = u;              // 재생 중 메모리에서 지워지지 않게 보관
+    speech.playing = true;
+    setSayLabel('재생 중… (누르면 중지)');
+    speech.timer = setTimeout(function () {
+      if (id === speech.id && !started) { synth.cancel(); speechFailed('no-start', synth.getVoices()); }
+    }, 4000);
+    if (synth.paused) synth.resume();
     synth.speak(u);
+  }
+  function sayJapanese() {
+    if (speech.playing) { stopSpeech(); return; }
+    showCardEl.querySelector('.sc-msg').textContent = '';
+    var alt = showCardEl.querySelector('.sc-alt');
+    if (alt) alt.hidden = true;
+    var synth = window.speechSynthesis;
+    // speak 직전에 cancel 하면 새 음성까지 취소되는 브라우저가 있어, 이전 음성이 남은 경우에만 간격을 둠
+    if (synth.speaking || synth.pending) { synth.cancel(); setTimeout(startSpeech, 150); }
+    else startSpeech();
   }
   showCardEl.addEventListener('click', function (e) {
     if (e.target.closest('[data-say]')) { sayJapanese(); return; }
+    if (e.target.closest('a')) return;
     closeCard();
   });
 
